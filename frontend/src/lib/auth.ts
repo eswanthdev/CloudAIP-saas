@@ -195,3 +195,13 @@ export const authHelper = {
     if (typeof window !== 'undefined') {
       return localStorage.getItem('authToken');
     }
+    return null;
+  },
+
+  isAuthenticated: (): boolean => {
+    if (typeof window === 'undefined') return false;
+    return !!localStorage.getItem('authToken');
+  },
+};
+
+export default authHelper;

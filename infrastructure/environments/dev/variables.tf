@@ -47,4 +47,6 @@ variable "cors_origins" {
 
 variable "additional_tags" {
   type        = map(string)
-  description = "Additional tags 
+  description = "Additional tags to apply to all resources"
+  default     = {}
+}
