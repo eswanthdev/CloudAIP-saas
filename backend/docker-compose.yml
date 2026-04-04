@@ -1,0 +1,71 @@
+version: "3.8"
+
+services:
+  # FastAPI Backend
+  backend:
+    build:
+      context: .
+      target: development
+    container_name: finops-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - AWS_REGION=ap-south-1
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-local}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-local}
+      - ENVIRONMENT=development
+      - DYNAMODB_ENDPOINT=http://dynamodb-local:8000
+      - COGNITO_USER_POOL_ID=${COGNITO_USER_POOL_ID:-local-pool}
+      - COGNITO_CLIENT_ID=${COGNITO_CLIENT_ID:-local-client}
+      - RAZORPAY_KEY_ID=${RAZORPAY_KEY_ID:-local-key}
+      - RAZORPAY_KEY_SECRET=${RAZORPAY_KEY_SECRET:-local-secret}
+      - S3_BUCKET_VIDEOS=finops-videos-local
+      - S3_BUCKET_RESUMES=finops-resumes-local
+      - S3_BUCKET_CERTIFICATES=finops-certificates-local
+    volumes:
+      - .:/app
+    depends_on:
+      - dynamodb-local
+    networks:
+      - finops-network
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  # DynamoDB Local
+  dynamodb-local:
+    image: amazon/dynamodb-local:latest
+    container_name: finops-dynamodb
+    ports:
+      - "8001:8000"
+    environment:
+      - AWS_ACCESS_KEY_ID=local
+      - AWS_SECRET_ACCESS_KEY=local
+    volumes:
+      - dynamodb-data:/home/dynamodblocal/data
+    networks:
+      - finops-network
+    command: -jar DynamoDBLocal.jar -sharedDb -dbPath /home/dynamodblocal/data
+
+  # LocalStack (for S3 and other AWS services)
+  localstack:
+    image: localstack/localstack:latest
+    container_name: finops-localstack
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=s3,ses
+      - DEBUG=1
+      - DATA_DIR=/tmp/localstack/data
+      - DOCKER_HOST=unix:///var/run/docker.sock
+    volumes:
+      - localstack-data:/tmp/localstack
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - finops-network
+
+volumes:
+  dynamodb-data:
+  localstack-data:
+
+networks:
+  finops-network:
+    driver: bridge

@@ -1,0 +1,236 @@
+name: Backend CI/CD
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend-ci-cd.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'backend/**'
+
+env:
+  PYTHON_VERSION: '3.11'
+  AWS_REGION: ${{ vars.AWS_REGION }}
+
+jobs:
+  lint-and-test:
+    name: Lint & Test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+          cache-dependency-path: backend/requirements.txt
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-cov flake8 black mypy
+
+      - name: Run flake8 linting
+        run: flake8 app/ --max-line-length=120 --ignore=E501,W503
+
+      - name: Run black formatting check
+        run: black --check app/
+
+      - name: Run mypy type check
+        run: mypy app/ --ignore-missing-imports
+
+      - name: Run tests
+        run: pytest tests/ -v --cov=app --cov-report=xml
+        env:
+          AWS_DEFAULT_REGION: ap-south-1
+          DYNAMODB_USERS_TABLE: test-users
+          DYNAMODB_COURSES_TABLE: test-courses
+          DYNAMODB_TIERS_TABLE: test-tiers
+          DYNAMODB_ENROLLMENTS_TABLE: test-enrollments
+          DYNAMODB_LESSONS_TABLE: test-lessons
+          DYNAMODB_PROGRESS_TABLE: test-progress
+          DYNAMODB_LEADS_TABLE: test-leads
+          DYNAMODB_MENTORSHIP_TABLE: test-mentorship
+          DYNAMODB_MODULES_TABLE: test-modules
+          COGNITO_USER_POOL_ID: test-pool
+          COGNITO_CLIENT_ID: test-client
+          S3_VIDEO_BUCKET: test-videos
+          S3_DOCUMENTS_BUCKET: test-docs
+          RAZORPAY_KEY_ID: test-key
+          RAZORPAY_KEY_SECRET: test-secret
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: backend/coverage.xml
+
+  package:
+    name: Package Lambda
+    needs: lint-and-test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Create Lambda layer
+        run: |
+          mkdir -p layer/python
+          pip install -r requirements.txt -t layer/python/
+          cd layer && zip -r ../lambda-layer.zip python/
+
+      - name: Create Lambda package
+        run: |
+          cd app && zip -r ../lambda-function.zip . -x "__pycache__/*" "*.pyc"
+
+      - name: Upload Lambda artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: lambda-packages
+          path: |
+            backend/lambda-function.zip
+            backend/lambda-layer.zip
+          retention-days: 7
+
+  deploy-dev:
+    name: Deploy to Dev
+    needs: package
+    if: github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+    environment: development
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Download Lambda artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: lambda-packages
+          path: packages/
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Upload layer to S3
+        run: |
+          aws s3 cp packages/lambda-layer.zip \
+            s3://${{ vars.DEPLOYMENT_BUCKET }}/dev/lambda-layer.zip
+
+      - name: Update Lambda layer
+        run: |
+          LAYER_ARN=$(aws lambda publish-layer-version \
+            --layer-name finops-saas-dev-dependencies \
+            --content S3Bucket=${{ vars.DEPLOYMENT_BUCKET }},S3Key=dev/lambda-layer.zip \
+            --compatible-runtimes python3.11 \
+            --query 'LayerVersionArn' --output text)
+          echo "LAYER_ARN=$LAYER_ARN" >> $GITHUB_ENV
+
+      - name: Upload function code to S3
+        run: |
+          aws s3 cp packages/lambda-function.zip \
+            s3://${{ vars.DEPLOYMENT_BUCKET }}/dev/lambda-function.zip
+
+      - name: Update Lambda function
+        run: |
+          aws lambda update-function-code \
+            --function-name finops-saas-dev-api \
+            --s3-bucket ${{ vars.DEPLOYMENT_BUCKET }} \
+            --s3-key dev/lambda-function.zip
+
+          aws lambda wait function-updated \
+            --function-name finops-saas-dev-api
+
+          aws lambda update-function-configuration \
+            --function-name finops-saas-dev-api \
+            --layers ${{ env.LAYER_ARN }}
+
+      - name: Verify deployment
+        run: |
+          aws lambda invoke \
+            --function-name finops-saas-dev-api \
+            --payload '{"httpMethod":"GET","path":"/health"}' \
+            response.json
+          cat response.json
+
+  deploy-prod:
+    name: Deploy to Production
+    needs: package
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Download Lambda artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: lambda-packages
+          path: packages/
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Upload layer to S3
+        run: |
+          aws s3 cp packages/lambda-layer.zip \
+            s3://${{ vars.DEPLOYMENT_BUCKET }}/prod/lambda-layer.zip
+
+      - name: Update Lambda layer
+        run: |
+          LAYER_ARN=$(aws lambda publish-layer-version \
+            --layer-name finops-saas-prod-dependencies \
+            --content S3Bucket=${{ vars.DEPLOYMENT_BUCKET }},S3Key=prod/lambda-layer.zip \
+            --compatible-runtimes python3.11 \
+            --query 'LayerVersionArn' --output text)
+          echo "LAYER_ARN=$LAYER_ARN" >> $GITHUB_ENV
+
+      - name: Upload function code to S3
+        run: |
+          aws s3 cp packages/lambda-function.zip \
+            s3://${{ vars.DEPLOYMENT_BUCKET }}/prod/lambda-function.zip
+
+      - name: Update Lambda function
+        run: |
+          aws lambda update-function-code \
+            --function-name finops-saas-prod-api \
+            --s3-bucket ${{ vars.DEPLOYMENT_BUCKET }} \
+            --s3-key prod/lambda-function.zip
+
+          aws lambda wait function-updated \
+            --function-name finops-saas-prod-api
+
+          aws lambda update-function-configuration \
+            --function-name finops-saas-prod-api \
+            --layers ${{ env.LAYER_ARN }}
+
+      - name: Verify deployment
+        run: |
+          aws lambda invoke \
+            --function-name finops-saas-prod-api \
+            --payload '{"httpMethod":"GET","path":"/health"}' \
+            response.json
+          cat response.json

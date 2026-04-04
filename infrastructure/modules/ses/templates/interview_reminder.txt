@@ -1,0 +1,22 @@
+Interview Reminder
+
+Dear {{name}},
+
+This is a reminder that your mock interview is coming up soon!
+
+INTERVIEW DETAILS:
+Date & Time: {{interview_date}} at {{interview_time}}
+Interviewer: {{interviewer_name}}
+Duration: {{duration}} minutes
+
+Please ensure you are prepared and ready before the scheduled time. You can join the interview room from your dashboard.
+
+Join Interview Room: {{interview_url}}
+
+If you need to reschedule, please contact us as soon as possible.
+
+Best regards,
+The FinOps SaaS Team
+
+---
+FinOps SaaS | Platform for Financial Operations Education

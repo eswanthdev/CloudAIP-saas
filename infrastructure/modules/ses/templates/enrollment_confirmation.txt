@@ -1,0 +1,22 @@
+Enrollment Confirmed!
+
+Dear {{name}},
+
+Congratulations! Your enrollment has been confirmed.
+
+COURSE INFORMATION:
+{{course_name}}
+Tier: {{tier_name}}
+Start Date: {{start_date}}
+
+You now have access to all course materials, lessons, and resources. Your learning journey begins now!
+
+Start Learning: {{course_url}}
+
+You can track your progress and access all course content from your dashboard.
+
+Best regards,
+The FinOps SaaS Team
+
+---
+FinOps SaaS | Platform for Financial Operations Education

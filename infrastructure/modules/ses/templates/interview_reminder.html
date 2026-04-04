@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background-color: #FF9800; color: white; padding: 20px; text-align: center; border-radius: 5px; }
+        .content { padding: 20px; border: 1px solid #ddd; border-radius: 5px; margin-top: 20px; }
+        .interview-info { background-color: #fff3cd; padding: 15px; border-left: 4px solid #FF9800; margin: 15px 0; }
+        .footer { margin-top: 20px; font-size: 12px; color: #999; text-align: center; }
+        .button { display: inline-block; padding: 10px 20px; background-color: #FF9800; color: white; text-decoration: none; border-radius: 5px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Interview Reminder</h1>
+        </div>
+        <div class="content">
+            <p>Dear {{name}},</p>
+            <p>This is a reminder that your mock interview is coming up soon!</p>
+            <div class="interview-info">
+                <h3>Interview Details</h3>
+                <p><strong>Date & Time:</strong> {{interview_date}} at {{interview_time}}</p>
+                <p><strong>Interviewer:</strong> {{interviewer_name}}</p>
+                <p><strong>Duration:</strong> {{duration}} minutes</p>
+            </div>
+            <p>Please ensure you are prepared and ready before the scheduled time. You can join the interview room from your dashboard.</p>
+            <a href="{{interview_url}}" class="button">Join Interview Room</a>
+            <p>If you need to reschedule, please contact us as soon as possible.</p>
+            <p>Best regards,<br>The FinOps SaaS Team</p>
+        </div>
+        <div class="footer">
+            <p>FinOps SaaS | Platform for Financial Operations Education</p>
+        </div>
+    </div>
+</body>
+</html>

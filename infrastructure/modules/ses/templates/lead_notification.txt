@@ -1,0 +1,22 @@
+New Lead Notification
+
+Hello,
+
+You have received a new lead notification from the FinOps SaaS platform.
+
+LEAD INFORMATION:
+Name: {{lead_name}}
+Email: {{lead_email}}
+Company: {{lead_company}}
+Interest: {{lead_interest}}
+Status: {{lead_status}}
+
+Please follow up with this lead as soon as possible to maximize conversion.
+
+View in Dashboard: {{leads_dashboard_url}}
+
+Best regards,
+The FinOps SaaS Team
+
+---
+FinOps SaaS | Platform for Financial Operations Education

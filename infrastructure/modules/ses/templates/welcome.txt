@@ -1,0 +1,19 @@
+Welcome to FinOps SaaS
+
+Dear {{name}},
+
+Thank you for signing up for FinOps SaaS! We're excited to have you on board.
+
+Your account has been successfully created and is ready to use. You can now access all course materials, mentorship sessions, and more.
+
+To get started, log in to your account and explore our comprehensive courses on financial operations.
+
+Login: {{login_url}}
+
+If you have any questions or need assistance, please don't hesitate to reach out to our support team.
+
+Best regards,
+The FinOps SaaS Team
+
+---
+FinOps SaaS | Platform for Financial Operations Education
