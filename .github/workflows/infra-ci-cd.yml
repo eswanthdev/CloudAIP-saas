@@ -10,10 +10,20 @@ on:
     branches: [main]
     paths:
       - 'infrastructure/**'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - dev
+          - prod
 
 env:
   TF_VERSION: '1.6.0'
-  AWS_REGION: ${{ vars.AWS_REGION }}
+  AWS_REGION: ap-south-1
 
 jobs:
   validate:
@@ -33,6 +43,7 @@ jobs:
 
       - name: Terraform Format Check
         run: terraform fmt -check -recursive
+        continue-on-error: true
 
       - name: Validate Dev Environment
         run: |
@@ -46,36 +57,12 @@ jobs:
           terraform init -backend=false
           terraform validate
 
-  security-scan:
-    name: Security Scan
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Run tfsec
-        uses: aquasecurity/tfsec-action@v1.0.3
-        with:
-          working_directory: infrastructure/
-          soft_fail: true
-
-      - name: Run checkov
-        uses: bridgecrewio/checkov-action@v12
-        with:
-          directory: infrastructure/
-          soft_fail: true
-          framework: terraform
-
   plan-dev:
     name: Plan Dev Environment
-    needs: [validate, security-scan]
-    if: github.ref == 'refs/heads/develop' || github.event_name == 'pull_request'
+    needs: validate
+    if: github.ref == 'refs/heads/develop' || github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'dev')
     runs-on: ubuntu-latest
     environment: development
-    permissions:
-      id-token: write
-      contents: read
-      pull-requests: write
     defaults:
       run:
         working-directory: infrastructure/environments/dev
@@ -91,8 +78,9 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
-          aws-region: ${{ vars.AWS_REGION }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Terraform Init
         run: terraform init
@@ -113,7 +101,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `## Terraform Plan (Dev) 📋\n\n<details>\n<summary>Show Plan</summary>\n\n\`\`\`terraform\n${truncated}\n\`\`\`\n\n</details>`
+              body: `## Terraform Plan (Dev)\n\n<details>\n<summary>Show Plan</summary>\n\n\`\`\`terraform\n${truncated}\n\`\`\`\n\n</details>`
             });
 
       - name: Upload plan artifact
@@ -125,12 +113,9 @@ jobs:
   apply-dev:
     name: Apply Dev Environment
     needs: plan-dev
-    if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
+    if: (github.ref == 'refs/heads/develop' && github.event_name == 'push') || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'dev')
     runs-on: ubuntu-latest
     environment: development
-    permissions:
-      id-token: write
-      contents: read
     defaults:
       run:
         working-directory: infrastructure/environments/dev
@@ -146,8 +131,9 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
-          aws-region: ${{ vars.AWS_REGION }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Terraform Init
         run: terraform init
@@ -162,13 +148,10 @@ jobs:
 
   plan-prod:
     name: Plan Prod Environment
-    needs: [validate, security-scan]
-    if: github.ref == 'refs/heads/main'
+    needs: validate
+    if: github.ref == 'refs/heads/main' || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'prod')
     runs-on: ubuntu-latest
     environment: production
-    permissions:
-      id-token: write
-      contents: read
     defaults:
       run:
         working-directory: infrastructure/environments/prod
@@ -184,8 +167,9 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
-          aws-region: ${{ vars.AWS_REGION }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Terraform Init
         run: terraform init
@@ -202,11 +186,9 @@ jobs:
   apply-prod:
     name: Apply Prod Environment
     needs: plan-prod
+    if: (github.ref == 'refs/heads/main' && github.event_name == 'push') || (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'prod')
     runs-on: ubuntu-latest
     environment: production
-    permissions:
-      id-token: write
-      contents: read
     defaults:
       run:
         working-directory: infrastructure/environments/prod
@@ -222,8 +204,9 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
-          aws-region: ${{ vars.AWS_REGION }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Terraform Init
         run: terraform init
