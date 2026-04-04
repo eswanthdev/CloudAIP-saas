@@ -37,6 +37,8 @@ resource "aws_s3_bucket_lifecycle_configuration" "videos" {
     id     = "delete-old-versions"
     status = "Enabled"
 
+    filter {}
+
     noncurrent_version_expiration {
       noncurrent_days = 30
     }
@@ -81,6 +83,8 @@ resource "aws_s3_bucket_lifecycle_configuration" "documents" {
   rule {
     id     = "archive-old-documents"
     status = "Enabled"
+
+    filter {}
 
     transition {
       days          = 90

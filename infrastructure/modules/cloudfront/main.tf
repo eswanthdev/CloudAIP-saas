@@ -32,7 +32,7 @@ resource "aws_cloudfront_distribution" "frontend" {
     max_ttl     = 86400
   }
 
-  cache_behavior {
+  ordered_cache_behavior {
     path_pattern           = "/index.html"
     allowed_methods        = ["GET", "HEAD", "OPTIONS"]
     cached_methods         = ["GET", "HEAD"]
@@ -52,7 +52,7 @@ resource "aws_cloudfront_distribution" "frontend" {
     max_ttl     = 0
   }
 
-  cache_behavior {
+  ordered_cache_behavior {
     path_pattern           = "/static/*"
     allowed_methods        = ["GET", "HEAD", "OPTIONS"]
     cached_methods         = ["GET", "HEAD"]
@@ -97,8 +97,6 @@ resource "aws_cloudfront_distribution" "frontend" {
   }
 
   tags = var.tags
-
-  depends_on = [var.cloudfront_oai_id]
 }
 
 resource "aws_cloudfront_cache_policy" "optimized" {
@@ -118,6 +116,7 @@ resource "aws_cloudfront_cache_policy" "optimized" {
     query_strings_config {
       query_string_behavior = "none"
     }
-    enable_accept_encoding_compression = true
+    enable_accept_encoding_gzip   = true
+    enable_accept_encoding_brotli = true
   }
 }

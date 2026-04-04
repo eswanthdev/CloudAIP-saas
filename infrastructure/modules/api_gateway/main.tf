@@ -30,7 +30,7 @@ resource "aws_apigatewayv2_integration" "lambda" {
   integration_type       = "AWS_PROXY"
   integration_method     = "POST"
   payload_format_version = "2.0"
-  target                 = var.lambda_function_arn
+  integration_uri        = var.lambda_function_arn
 }
 
 resource "aws_apigatewayv2_route" "default" {
@@ -71,9 +71,9 @@ resource "aws_apigatewayv2_stage" "dev" {
     })
   }
 
-  throttle_settings {
-    burst_limit = 100
-    rate_limit  = 50
+  default_route_settings {
+    throttling_burst_limit = 100
+    throttling_rate_limit  = 50
   }
 
   tags = var.tags
@@ -104,9 +104,9 @@ resource "aws_apigatewayv2_stage" "prod" {
     })
   }
 
-  throttle_settings {
-    burst_limit = 500
-    rate_limit  = 200
+  default_route_settings {
+    throttling_burst_limit = 500
+    throttling_rate_limit  = 200
   }
 
   tags = var.tags

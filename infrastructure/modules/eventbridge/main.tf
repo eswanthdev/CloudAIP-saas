@@ -2,7 +2,7 @@ resource "aws_cloudwatch_event_rule" "mock_interview_scheduling" {
   name                = "${var.environment}-mock-interview-scheduling"
   description         = "Rule to trigger mock interview scheduling Lambda"
   schedule_expression = "rate(1 hour)"
-  is_enabled          = true
+  state               = "ENABLED"
 
   tags = var.tags
 }
@@ -25,7 +25,7 @@ resource "aws_cloudwatch_event_rule" "mentorship_reminders" {
   name                = "${var.environment}-mentorship-reminders"
   description         = "Rule to trigger mentorship session reminder Lambda"
   schedule_expression = "rate(30 minutes)"
-  is_enabled          = true
+  state               = "ENABLED"
 
   tags = var.tags
 }
@@ -48,7 +48,7 @@ resource "aws_cloudwatch_event_rule" "enrollment_notifications" {
   name                = "${var.environment}-enrollment-notifications"
   description         = "Rule to trigger enrollment notification Lambda"
   schedule_expression = "rate(5 minutes)"
-  is_enabled          = true
+  state               = "ENABLED"
 
   tags = var.tags
 }
