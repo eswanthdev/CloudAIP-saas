@@ -44,3 +44,9 @@ coverage.xml
 # Logs
 *.log
 npm-debug.log*
+
+# Lambda layer build artifact
+backend/layer/
+
+# Claude memory
+.claude/

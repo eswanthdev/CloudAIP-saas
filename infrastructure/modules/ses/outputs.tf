@@ -4,7 +4,7 @@ output "configuration_set_name" {
 }
 
 output "sender_email" {
-  value       = aws_sesv2_email_identity.welcome.email_address
+  value       = aws_sesv2_email_identity.welcome.email_identity
   description = "Verified sender email address"
 }
 

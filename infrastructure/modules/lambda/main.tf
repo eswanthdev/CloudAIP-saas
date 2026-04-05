@@ -85,7 +85,7 @@ resource "aws_lambda_function_url" "backend" {
 }
 
 resource "aws_cloudwatch_log_group" "lambda_insights" {
-  name              = "/aws/lambda-insights:${aws_lambda_function.backend.function_name}"
+  name              = "/aws/lambda-insights/${aws_lambda_function.backend.function_name}"
   retention_in_days = 14
 
   tags = var.tags
