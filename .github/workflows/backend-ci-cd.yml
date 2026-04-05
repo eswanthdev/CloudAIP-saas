@@ -14,7 +14,7 @@ on:
 
 env:
   PYTHON_VERSION: '3.11'
-  AWS_REGION: ap-south-1
+  AWS_REGION: us-east-1
 
 jobs:
   lint-and-test:
@@ -131,7 +131,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-south-1
+          aws-region: us-east-1
 
       - name: Upload layer to S3
         run: |
@@ -141,7 +141,7 @@ jobs:
       - name: Update Lambda layer
         run: |
           LAYER_ARN=$(aws lambda publish-layer-version \
-            --layer-name finops-saas-dev-dependencies \
+            --layer-name dev-finops-dependencies \
             --content S3Bucket=cloudaip-saas-terraform-state,S3Key=lambda/dev/lambda-layer.zip \
             --compatible-runtimes python3.11 \
             --query 'LayerVersionArn' --output text)
@@ -155,21 +155,21 @@ jobs:
       - name: Update Lambda function
         run: |
           aws lambda update-function-code \
-            --function-name finops-saas-dev-api \
+            --function-name dev-finops-backend \
             --s3-bucket cloudaip-saas-terraform-state \
             --s3-key lambda/dev/lambda-function.zip
 
           aws lambda wait function-updated \
-            --function-name finops-saas-dev-api
+            --function-name dev-finops-backend
 
           aws lambda update-function-configuration \
-            --function-name finops-saas-dev-api \
+            --function-name dev-finops-backend \
             --layers ${{ env.LAYER_ARN }}
 
       - name: Verify deployment
         run: |
           aws lambda invoke \
-            --function-name finops-saas-dev-api \
+            --function-name dev-finops-backend \
             --payload '{"httpMethod":"GET","path":"/health"}' \
             response.json
           cat response.json
@@ -195,7 +195,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-south-1
+          aws-region: us-east-1
 
       - name: Upload layer to S3
         run: |
