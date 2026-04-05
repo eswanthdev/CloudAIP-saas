@@ -43,6 +43,10 @@ resource "aws_cognito_user_pool" "main" {
     enabled = true
   }
 
+  lifecycle {
+    ignore_changes = [schema]
+  }
+
   tags = var.tags
 }
 
