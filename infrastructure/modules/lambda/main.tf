@@ -60,7 +60,6 @@ resource "aws_lambda_function" "backend" {
       SNS_LEAD_NOTIFICATIONS_TOPIC       = var.sns_lead_notifications_topic
       SNS_INTERVIEW_REMINDERS_TOPIC      = var.sns_interview_reminders_topic
       SNS_ENROLLMENT_CONFIRMATIONS_TOPIC = var.sns_enrollment_confirmations_topic
-      AWS_REGION                         = var.aws_region
     }
   }
 
