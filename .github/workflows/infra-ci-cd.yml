@@ -85,6 +85,8 @@ jobs:
         id: plan
         run: terraform plan -out=tfplan -no-color
         continue-on-error: true
+        env:
+          TF_VAR_ses_sender_email: ${{ secrets.TF_VAR_ses_sender_email }}
 
       - name: Upload plan artifact
         uses: actions/upload-artifact@v4
@@ -125,6 +127,8 @@ jobs:
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
+        env:
+          TF_VAR_ses_sender_email: ${{ secrets.TF_VAR_ses_sender_email }}
 
       - name: Export outputs
         run: |
