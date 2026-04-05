@@ -76,7 +76,7 @@ resource "aws_lambda_function_url" "backend" {
   authorization_type = "NONE"
   cors {
     allow_origins  = var.cors_origins
-    allow_methods  = ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+    allow_methods  = ["*"]
     allow_headers  = ["Date", "x-amz-date", "Content-Type", "X-Amz-Content-Sha256", "Authorization", "X-Api-Key", "X-Amz-Security-Token", "X-Amz-User-Agent"]
     expose_headers = ["x-amzn-RequestId"]
     max_age        = 86400
