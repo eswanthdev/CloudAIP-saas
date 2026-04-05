@@ -1,7 +1,7 @@
 """Authentication middleware and dependencies."""
 
 from fastapi import Depends, HTTPException, status
-from fastapi.security import HTTPBearer, HTTPAuthCredentials
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 import jwt
 from typing import Optional, Dict, Any
 import requests
@@ -102,7 +102,7 @@ def verify_token(token: str) -> Dict[str, Any]:
 
 
 async def get_current_user(
-    credentials: HTTPAuthCredentials = Depends(security),
+    credentials: HTTPAuthorizationCredentials = Depends(security),
 ) -> Dict[str, Any]:
     """Get current user from JWT token.
 
@@ -213,7 +213,7 @@ async def require_tier(
 
 
 async def optional_user(
-    credentials: Optional[HTTPAuthCredentials] = Depends(security),
+    credentials: Optional[HTTPAuthorizationCredentials] = Depends(security),
 ) -> Optional[Dict[str, Any]]:
     """Get current user if authenticated, otherwise None.
 
