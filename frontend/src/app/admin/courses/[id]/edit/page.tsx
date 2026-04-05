@@ -1,6 +1,4 @@
-import dynamic from 'next/dynamic';
-
-const EditCourseClient = dynamic(() => import('./EditCourseClient'), { ssr: false });
+import EditCourseClient from './EditCourseClient';
 
 export function generateStaticParams() {
   return [];

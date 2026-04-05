@@ -157,9 +157,10 @@ jobs:
 
       - name: Verify deployment
         run: |
+          echo '{"httpMethod":"GET","path":"/health"}' > payload.json
           aws lambda invoke \
             --function-name dev-finops-backend \
-            --payload '{"httpMethod":"GET","path":"/health"}' \
+            --payload fileb://payload.json \
             response.json
           cat response.json
 
@@ -210,8 +211,9 @@ jobs:
 
       - name: Verify deployment
         run: |
+          echo '{"httpMethod":"GET","path":"/health"}' > payload.json
           aws lambda invoke \
             --function-name finops-saas-prod-api \
-            --payload '{"httpMethod":"GET","path":"/health"}' \
+            --payload fileb://payload.json \
             response.json
           cat response.json
