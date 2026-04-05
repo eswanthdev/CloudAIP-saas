@@ -1,4 +1,5 @@
 """Service leads routes."""
+
 from fastapi import APIRouter, HTTPException, status, Depends
 from app.schemas.services import (
     ServiceLeadRequest,

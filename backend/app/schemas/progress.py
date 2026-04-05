@@ -1,4 +1,5 @@
 """Pydantic models for progress tracking."""
+
 from pydantic import BaseModel, Field
 from typing import Optional
 

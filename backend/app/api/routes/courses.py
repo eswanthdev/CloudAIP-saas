@@ -1,4 +1,5 @@
 """Courses routes."""
+
 from fastapi import APIRouter, HTTPException, status, Depends
 from app.schemas.course import (
     CourseSchema,
@@ -227,7 +228,9 @@ async def get_my_courses(current_user: dict = Depends(get_current_user)):
                 )
                 total_lessons = len(progress) if progress else 0
                 completed = sum(1 for p in progress if p.get("status") == "completed")
-                percentage = (completed / total_lessons * 100) if total_lessons > 0 else 0
+                percentage = (
+                    (completed / total_lessons * 100) if total_lessons > 0 else 0
+                )
 
                 result.append(
                     UserCourseEnrollment(

@@ -1,4 +1,5 @@
 """Certificate generation and management service."""
+
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import inch
@@ -123,16 +124,12 @@ class CertificateService:
         content.append(Spacer(1, 0.3 * inch))
 
         # Certificate ID
-        content.append(
-            Paragraph(f"Certificate ID: {certificate_id}", signature_style)
-        )
+        content.append(Paragraph(f"Certificate ID: {certificate_id}", signature_style))
         content.append(Spacer(1, 0.5 * inch))
 
         # Signature lines
         content.append(Spacer(1, 0.3 * inch))
-        content.append(
-            Paragraph("_______________________________", signature_style)
-        )
+        content.append(Paragraph("_______________________________", signature_style))
         content.append(Paragraph("FinOps Training Team", signature_style))
 
         # Footer

@@ -1,4 +1,5 @@
 """Configuration module for FinOps SaaS backend."""
+
 import os
 from pydantic_settings import BaseSettings
 
@@ -13,11 +14,15 @@ class Settings(BaseSettings):
 
     # DynamoDB Configuration
     dynamodb_courses_table: str = os.getenv("DYNAMODB_COURSES_TABLE", "courses")
-    dynamodb_enrollments_table: str = os.getenv("DYNAMODB_ENROLLMENTS_TABLE", "enrollments")
+    dynamodb_enrollments_table: str = os.getenv(
+        "DYNAMODB_ENROLLMENTS_TABLE", "enrollments"
+    )
     dynamodb_users_table: str = os.getenv("DYNAMODB_USERS_TABLE", "users")
     dynamodb_progress_table: str = os.getenv("DYNAMODB_PROGRESS_TABLE", "progress")
     dynamodb_payments_table: str = os.getenv("DYNAMODB_PAYMENTS_TABLE", "payments")
-    dynamodb_mentorship_table: str = os.getenv("DYNAMODB_MENTORSHIP_TABLE", "mentorship_sessions")
+    dynamodb_mentorship_table: str = os.getenv(
+        "DYNAMODB_MENTORSHIP_TABLE", "mentorship_sessions"
+    )
     dynamodb_leads_table: str = os.getenv("DYNAMODB_LEADS_TABLE", "service_leads")
 
     # Cognito Configuration
@@ -28,7 +33,9 @@ class Settings(BaseSettings):
     # S3 Configuration
     s3_bucket_videos: str = os.getenv("S3_BUCKET_VIDEOS", "finops-videos")
     s3_bucket_resumes: str = os.getenv("S3_BUCKET_RESUMES", "finops-resumes")
-    s3_bucket_certificates: str = os.getenv("S3_BUCKET_CERTIFICATES", "finops-certificates")
+    s3_bucket_certificates: str = os.getenv(
+        "S3_BUCKET_CERTIFICATES", "finops-certificates"
+    )
     s3_region: str = os.getenv("S3_REGION", "ap-south-1")
 
     # Razorpay Configuration
@@ -43,7 +50,9 @@ class Settings(BaseSettings):
     ]
 
     # JWT Configuration
-    jwt_secret_key: str = os.getenv("JWT_SECRET_KEY", "your-secret-key-change-in-production")
+    jwt_secret_key: str = os.getenv(
+        "JWT_SECRET_KEY", "your-secret-key-change-in-production"
+    )
     jwt_algorithm: str = "HS256"
     jwt_expiration_hours: int = 24
 
@@ -58,6 +67,7 @@ class Settings(BaseSettings):
 
     class Config:
         """Pydantic config."""
+
         case_sensitive = False
         env_file = ".env"
 

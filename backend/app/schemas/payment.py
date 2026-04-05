@@ -1,4 +1,5 @@
 """Pydantic models for payments."""
+
 from pydantic import BaseModel, Field
 from typing import Optional
 

@@ -1,4 +1,5 @@
 """Utility helper functions for the application."""
+
 import uuid
 from datetime import datetime, timedelta, timezone
 from typing import Any, Dict
@@ -156,6 +157,7 @@ def validate_email(email: str) -> bool:
         bool: True if valid, False otherwise.
     """
     import re
+
     pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
     return re.match(pattern, email) is not None
 
@@ -170,6 +172,7 @@ def validate_phone(phone: str) -> bool:
         bool: True if valid, False otherwise.
     """
     import re
+
     pattern = r"^\+?[1-9]\d{1,14}$"
     return re.match(pattern, phone) is not None
 
@@ -259,6 +262,7 @@ def parse_jwt_payload(payload: str) -> Dict[str, Any]:
         dict: Parsed payload.
     """
     import base64
+
     padding = 4 - len(payload) % 4
     if padding != 4:
         payload += "=" * padding

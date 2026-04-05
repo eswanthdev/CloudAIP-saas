@@ -1,4 +1,5 @@
 """Authentication routes."""
+
 from fastapi import APIRouter, HTTPException, status, Depends
 from app.schemas.auth import (
     SignupRequest,

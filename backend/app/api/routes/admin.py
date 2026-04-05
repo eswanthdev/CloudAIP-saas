@@ -1,4 +1,5 @@
 """Admin routes."""
+
 from fastapi import APIRouter, HTTPException, status, Depends, UploadFile, File
 from app.schemas.course import (
     CreateCourseRequest,

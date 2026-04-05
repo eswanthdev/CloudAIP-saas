@@ -1,4 +1,5 @@
 """DynamoDB models and operations."""
+
 from typing import List, Dict, Any, Optional
 import boto3
 from botocore.exceptions import ClientError
@@ -215,7 +216,9 @@ class DynamoDBTable:
                     items.append(item)
             return items
         except ClientError as e:
-            raise Exception(f"Failed to batch get items from {self.table_name}: {str(e)}")
+            raise Exception(
+                f"Failed to batch get items from {self.table_name}: {str(e)}"
+            )
 
     def batch_write_items(self, items: List[Dict[str, Any]]) -> bool:
         """Batch write items to table.
@@ -238,7 +241,9 @@ class DynamoDBTable:
                     batch.put_item(Item=item)
             return True
         except ClientError as e:
-            raise Exception(f"Failed to batch write items to {self.table_name}: {str(e)}")
+            raise Exception(
+                f"Failed to batch write items to {self.table_name}: {str(e)}"
+            )
 
 
 class CoursesTable(DynamoDBTable):
@@ -466,9 +471,7 @@ class EnrollmentsTable(DynamoDBTable):
         Returns:
             dict: Enrollment if found, None otherwise.
         """
-        return self.get_item(
-            {"pk": f"USER#{user_id}", "sk": f"ENROLLMENT#{course_id}"}
-        )
+        return self.get_item({"pk": f"USER#{user_id}", "sk": f"ENROLLMENT#{course_id}"})
 
     def get_user_enrollments(self, user_id: str) -> List[Dict[str, Any]]:
         """Get all enrollments for a user.
@@ -744,7 +747,9 @@ class PaymentsTable(DynamoDBTable):
                 return item
         return None
 
-    def get_payment_by_order_id(self, razorpay_order_id: str) -> Optional[Dict[str, Any]]:
+    def get_payment_by_order_id(
+        self, razorpay_order_id: str
+    ) -> Optional[Dict[str, Any]]:
         """Get payment by Razorpay order ID.
 
         Args:
@@ -814,10 +819,7 @@ class PaymentsTable(DynamoDBTable):
             list: User payments.
         """
         items = self.scan()
-        return [
-            item for item in items
-            if item.get("sk") == f"USER#{user_id}"
-        ]
+        return [item for item in items if item.get("sk") == f"USER#{user_id}"]
 
 
 class MentorshipSessionsTable(DynamoDBTable):
@@ -892,10 +894,7 @@ class MentorshipSessionsTable(DynamoDBTable):
             list: User sessions.
         """
         items = self.scan()
-        sessions = [
-            item for item in items
-            if item.get("sk") == f"USER#{user_id}"
-        ]
+        sessions = [item for item in items if item.get("sk") == f"USER#{user_id}"]
         if session_type:
             sessions = [s for s in sessions if s.get("session_type") == session_type]
         return sorted(sessions, key=lambda x: x.get("scheduled_time", ""), reverse=True)
@@ -991,10 +990,7 @@ class MentorshipSessionsTable(DynamoDBTable):
             list: Mentor's sessions.
         """
         items = self.scan()
-        return [
-            item for item in items
-            if item.get("mentor_id") == mentor_id
-        ]
+        return [item for item in items if item.get("mentor_id") == mentor_id]
 
 
 class ServiceLeadsTable(DynamoDBTable):
@@ -1116,7 +1112,11 @@ class LessonsTable(DynamoDBTable):
 
     def __init__(self):
         """Initialize lessons table."""
-        super().__init__(settings.dynamodb_lessons_table if hasattr(settings, 'dynamodb_lessons_table') else "finops-saas-lessons")
+        super().__init__(
+            settings.dynamodb_lessons_table
+            if hasattr(settings, "dynamodb_lessons_table")
+            else "finops-saas-lessons"
+        )
 
     def create_lesson(
         self,

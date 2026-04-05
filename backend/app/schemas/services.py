@@ -1,4 +1,5 @@
 """Pydantic models for services."""
+
 from pydantic import BaseModel, EmailStr, Field
 from typing import Optional
 
@@ -11,7 +12,8 @@ class ServiceLeadRequest(BaseModel):
     contact_phone: str = Field(..., description="Contact phone")
     contact_name: str = Field(..., description="Contact person name")
     service_type: str = Field(
-        ..., description="Service type: finops_strategy, cost_optimization, cloud_audit, training"
+        ...,
+        description="Service type: finops_strategy, cost_optimization, cloud_audit, training",
     )
     company_size: str = Field(
         ..., description="Company size: startup, small, medium, enterprise"
@@ -39,7 +41,9 @@ class ServiceLeadResponse(BaseModel):
 class UpdateLeadStatusRequest(BaseModel):
     """Update lead status request."""
 
-    status: str = Field(..., description="Status: new, contacted, qualified, proposal_sent, won, lost")
+    status: str = Field(
+        ..., description="Status: new, contacted, qualified, proposal_sent, won, lost"
+    )
     notes: Optional[str] = Field(None, description="Status update notes")
     assigned_to: Optional[str] = Field(None, description="Sales person ID")
 

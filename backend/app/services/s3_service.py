@@ -1,4 +1,5 @@
 """AWS S3 integration service."""
+
 import boto3
 from botocore.exceptions import ClientError
 from app.config import settings
@@ -219,11 +220,13 @@ class S3Service:
 
             for page in pages:
                 for obj in page.get("Contents", []):
-                    objects.append({
-                        "key": obj["Key"],
-                        "size": obj["Size"],
-                        "last_modified": obj["LastModified"].isoformat(),
-                    })
+                    objects.append(
+                        {
+                            "key": obj["Key"],
+                            "size": obj["Size"],
+                            "last_modified": obj["LastModified"].isoformat(),
+                        }
+                    )
 
             return objects
 

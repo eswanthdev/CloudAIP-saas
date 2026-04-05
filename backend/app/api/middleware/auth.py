@@ -1,4 +1,5 @@
 """Authentication middleware and dependencies."""
+
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthCredentials
 import jwt

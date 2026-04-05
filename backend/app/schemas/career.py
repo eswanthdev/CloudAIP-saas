@@ -1,4 +1,5 @@
 """Pydantic models for career support."""
+
 from pydantic import BaseModel, Field, EmailStr
 from typing import Optional, List
 from datetime import datetime

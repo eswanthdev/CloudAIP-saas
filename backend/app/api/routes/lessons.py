@@ -1,4 +1,5 @@
 """Lessons routes."""
+
 from fastapi import APIRouter, HTTPException, status, Depends
 from app.schemas.course import LessonSchema
 from app.models.dynamodb import CoursesTable, EnrollmentsTable, DynamoDBTable
@@ -149,7 +150,11 @@ async def get_lesson_content(
             try:
                 # Extract S3 key from URL
                 bucket = settings.s3_bucket_videos
-                key = content_url.split(f"{bucket}/")[-1] if bucket in content_url else content_url
+                key = (
+                    content_url.split(f"{bucket}/")[-1]
+                    if bucket in content_url
+                    else content_url
+                )
 
                 presigned_url = s3_service.generate_presigned_url(
                     bucket=bucket,

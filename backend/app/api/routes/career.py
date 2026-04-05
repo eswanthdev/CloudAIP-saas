@@ -1,4 +1,5 @@
 """Career support routes."""
+
 from fastapi import APIRouter, HTTPException, status, Depends, UploadFile, File
 from app.schemas.career import (
     MockInterviewScheduleRequest,

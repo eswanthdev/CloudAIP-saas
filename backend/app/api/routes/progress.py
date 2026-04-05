@@ -1,4 +1,5 @@
 """Progress tracking routes."""
+
 from fastapi import APIRouter, HTTPException, status, Depends
 from app.schemas.progress import (
     MarkCompleteRequest,
@@ -114,7 +115,9 @@ async def get_course_progress(
         completed_lessons = sum(1 for p in progress if p.get("status") == "completed")
         total_time = sum(p.get("time_spent_minutes", 0) for p in progress)
 
-        percentage = (completed_lessons / total_lessons * 100) if total_lessons > 0 else 0
+        percentage = (
+            (completed_lessons / total_lessons * 100) if total_lessons > 0 else 0
+        )
 
         return CourseProgressResponse(
             course_id=course_id,

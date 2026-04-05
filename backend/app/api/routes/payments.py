@@ -1,4 +1,5 @@
 """Payment routes."""
+
 from fastapi import APIRouter, HTTPException, status, Depends
 from app.schemas.payment import (
     CreateOrderRequest,
@@ -198,7 +199,8 @@ async def get_payment_history(current_user: dict = Depends(get_current_user)):
         payments = payments_table.scan()
 
         user_payments = [
-            p for p in payments
+            p
+            for p in payments
             if p.get("user_id") == user_id and p.get("sk") == "METADATA"
         ]
 
@@ -218,12 +220,8 @@ async def get_payment_history(current_user: dict = Depends(get_current_user)):
             if p.get("status") in ["verified", "completed"]
         ]
 
-        total_inr = sum(
-            p.amount for p in payment_list if p.currency == "INR"
-        )
-        total_usd = sum(
-            p.amount for p in payment_list if p.currency == "USD"
-        )
+        total_inr = sum(p.amount for p in payment_list if p.currency == "INR")
+        total_usd = sum(p.amount for p in payment_list if p.currency == "USD")
 
         return PaymentListResponse(
             payments=payment_list,

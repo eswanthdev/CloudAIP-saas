@@ -1,4 +1,5 @@
 """Pydantic models for authentication."""
+
 from pydantic import BaseModel, EmailStr, Field
 from typing import Optional
 

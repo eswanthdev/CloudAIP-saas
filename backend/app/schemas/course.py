@@ -1,4 +1,5 @@
 """Pydantic models for courses."""
+
 from pydantic import BaseModel, Field
 from typing import List, Optional
 
@@ -26,7 +27,9 @@ class LessonSchema(BaseModel):
     lesson_id: str
     lesson_name: str
     description: str
-    lesson_type: str = Field(..., description="Type: video, lab, mock_interview, placement_session")
+    lesson_type: str = Field(
+        ..., description="Type: video, lab, mock_interview, placement_session"
+    )
     content_url: Optional[str]
     duration_minutes: int
     order: int

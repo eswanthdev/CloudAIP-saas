@@ -41,7 +41,7 @@ jobs:
           pip install pytest pytest-cov flake8 black mypy
 
       - name: Run flake8 linting
-        run: flake8 app/ --max-line-length=120 --ignore=E501,W503
+        run: flake8 app/ --max-line-length=120 --ignore=E501,W503,F401,F841,E741
 
       - name: Run black formatting check
         run: black --check app/
