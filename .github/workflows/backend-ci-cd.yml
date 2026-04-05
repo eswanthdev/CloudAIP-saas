@@ -50,7 +50,7 @@ jobs:
         run: mypy app/ --ignore-missing-imports || true
 
       - name: Run tests
-        run: pytest tests/ -v --cov=app --cov-report=xml
+        run: python -m pytest tests/ -v --cov=app --cov-report=xml
         env:
           AWS_DEFAULT_REGION: ap-south-1
           DYNAMODB_USERS_TABLE: test-users
