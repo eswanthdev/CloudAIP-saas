@@ -57,7 +57,7 @@ resource "aws_cognito_user_pool" "main" {
 resource "aws_cognito_user_pool_client" "main" {
   name                                 = "${var.environment}-finops-client"
   user_pool_id                         = aws_cognito_user_pool.main.id
-  explicit_auth_flows                  = ["ADMIN_NO_SRP_AUTH", "USER_PASSWORD_AUTH", "ALLOW_REFRESH_TOKEN_AUTH"]
+  explicit_auth_flows                  = ["ALLOW_ADMIN_USER_PASSWORD_AUTH", "ALLOW_USER_PASSWORD_AUTH", "ALLOW_REFRESH_TOKEN_AUTH"]
   allowed_oauth_flows                  = ["code", "implicit"]
   allowed_oauth_scopes                 = ["openid", "profile", "email"]
   allowed_oauth_flows_user_pool_client = true
@@ -96,6 +96,6 @@ resource "aws_cognito_user_group" "student" {
 }
 
 resource "aws_cognito_user_pool_domain" "main" {
-  domain       = "${var.environment}-finops-${substr(aws_cognito_user_pool.main.id, 0, 8)}"
+  domain       = "${var.environment}-finops-${lower(element(split("_", aws_cognito_user_pool.main.id), 1))}"
   user_pool_id = aws_cognito_user_pool.main.id
 }
