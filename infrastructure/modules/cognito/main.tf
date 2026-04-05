@@ -9,6 +9,7 @@ resource "aws_cognito_user_pool" "main" {
     require_uppercase = true
   }
 
+  auto_verified_attributes   = ["email"]
   email_verification_subject = "FinOps SaaS Verification Code"
   email_verification_message = "Your verification code is {####}"
 

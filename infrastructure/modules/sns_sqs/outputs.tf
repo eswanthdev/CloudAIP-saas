@@ -63,12 +63,27 @@ output "lead_notifications_dlq_url" {
   description = "URL of the lead notifications DLQ"
 }
 
+output "lead_notifications_dlq_arn" {
+  value       = aws_sqs_queue.lead_notifications_dlq.arn
+  description = "ARN of the lead notifications DLQ"
+}
+
 output "interview_reminders_dlq_url" {
   value       = aws_sqs_queue.interview_reminders_dlq.url
   description = "URL of the interview reminders DLQ"
 }
 
+output "interview_reminders_dlq_arn" {
+  value       = aws_sqs_queue.interview_reminders_dlq.arn
+  description = "ARN of the interview reminders DLQ"
+}
+
 output "enrollment_confirmations_dlq_url" {
   value       = aws_sqs_queue.enrollment_confirmations_dlq.url
   description = "URL of the enrollment confirmations DLQ"
+}
+
+output "enrollment_confirmations_dlq_arn" {
+  value       = aws_sqs_queue.enrollment_confirmations_dlq.arn
+  description = "ARN of the enrollment confirmations DLQ"
 }

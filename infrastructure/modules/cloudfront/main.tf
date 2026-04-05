@@ -9,7 +9,7 @@ resource "aws_cloudfront_distribution" "frontend" {
     origin_id   = "S3Frontend"
 
     s3_origin_config {
-      origin_access_identity = var.cloudfront_oai_iam_arn
+      origin_access_identity = "origin-access-identity/cloudfront/${var.cloudfront_oai_id}"
     }
   }
 

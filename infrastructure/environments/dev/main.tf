@@ -167,8 +167,8 @@ locals {
     module.sns_sqs.lead_notifications_queue_arn,
     module.sns_sqs.interview_reminders_queue_arn,
     module.sns_sqs.enrollment_confirmations_queue_arn,
-    module.sns_sqs.lead_notifications_dlq_url,
-    module.sns_sqs.interview_reminders_dlq_url,
-    module.sns_sqs.enrollment_confirmations_dlq_url
+    module.sns_sqs.lead_notifications_dlq_arn,
+    module.sns_sqs.interview_reminders_dlq_arn,
+    module.sns_sqs.enrollment_confirmations_dlq_arn
   ]
 }
