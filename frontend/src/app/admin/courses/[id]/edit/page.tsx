@@ -1,7 +1,9 @@
 import EditCourseClient from './EditCourseClient';
 
+export const dynamicParams = true;
+
 export function generateStaticParams() {
-  return [];
+  return [{ id: 'placeholder' }];
 }
 
 export default function EditCoursePage() {
