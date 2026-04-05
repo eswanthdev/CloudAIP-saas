@@ -133,31 +133,20 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Upload layer to S3
-        run: |
-          aws s3 cp packages/lambda-layer.zip \
-            s3://cloudaip-saas-terraform-state/lambda/dev/lambda-layer.zip
-
       - name: Update Lambda layer
         run: |
           LAYER_ARN=$(aws lambda publish-layer-version \
             --layer-name dev-finops-dependencies \
-            --content S3Bucket=cloudaip-saas-terraform-state,S3Key=lambda/dev/lambda-layer.zip \
+            --zip-file fileb://packages/lambda-layer.zip \
             --compatible-runtimes python3.11 \
             --query 'LayerVersionArn' --output text)
           echo "LAYER_ARN=$LAYER_ARN" >> $GITHUB_ENV
-
-      - name: Upload function code to S3
-        run: |
-          aws s3 cp packages/lambda-function.zip \
-            s3://cloudaip-saas-terraform-state/lambda/dev/lambda-function.zip
 
       - name: Update Lambda function
         run: |
           aws lambda update-function-code \
             --function-name dev-finops-backend \
-            --s3-bucket cloudaip-saas-terraform-state \
-            --s3-key lambda/dev/lambda-function.zip
+            --zip-file fileb://packages/lambda-function.zip
 
           aws lambda wait function-updated \
             --function-name dev-finops-backend
@@ -197,31 +186,20 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Upload layer to S3
-        run: |
-          aws s3 cp packages/lambda-layer.zip \
-            s3://cloudaip-saas-terraform-state/lambda/prod/lambda-layer.zip
-
       - name: Update Lambda layer
         run: |
           LAYER_ARN=$(aws lambda publish-layer-version \
             --layer-name finops-saas-prod-dependencies \
-            --content S3Bucket=cloudaip-saas-terraform-state,S3Key=lambda/prod/lambda-layer.zip \
+            --zip-file fileb://packages/lambda-layer.zip \
             --compatible-runtimes python3.11 \
             --query 'LayerVersionArn' --output text)
           echo "LAYER_ARN=$LAYER_ARN" >> $GITHUB_ENV
-
-      - name: Upload function code to S3
-        run: |
-          aws s3 cp packages/lambda-function.zip \
-            s3://cloudaip-saas-terraform-state/lambda/prod/lambda-function.zip
 
       - name: Update Lambda function
         run: |
           aws lambda update-function-code \
             --function-name finops-saas-prod-api \
-            --s3-bucket cloudaip-saas-terraform-state \
-            --s3-key lambda/prod/lambda-function.zip
+            --zip-file fileb://packages/lambda-function.zip
 
           aws lambda wait function-updated \
             --function-name finops-saas-prod-api
