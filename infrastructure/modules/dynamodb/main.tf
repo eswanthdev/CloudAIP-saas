@@ -1,7 +1,7 @@
 resource "aws_dynamodb_table" "users" {
-  name           = "${var.environment}-users"
-  billing_mode   = "PAY_PER_REQUEST"
-  hash_key       = "id"
+  name         = "${var.environment}-users"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "id"
 
   point_in_time_recovery {
     enabled = true
@@ -27,9 +27,9 @@ resource "aws_dynamodb_table" "users" {
 }
 
 resource "aws_dynamodb_table" "courses" {
-  name           = "${var.environment}-courses"
-  billing_mode   = "PAY_PER_REQUEST"
-  hash_key       = "id"
+  name         = "${var.environment}-courses"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "id"
 
   point_in_time_recovery {
     enabled = true
@@ -44,9 +44,9 @@ resource "aws_dynamodb_table" "courses" {
 }
 
 resource "aws_dynamodb_table" "course_tiers" {
-  name           = "${var.environment}-course-tiers"
-  billing_mode   = "PAY_PER_REQUEST"
-  hash_key       = "id"
+  name         = "${var.environment}-course-tiers"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "id"
 
   point_in_time_recovery {
     enabled = true
@@ -72,9 +72,9 @@ resource "aws_dynamodb_table" "course_tiers" {
 }
 
 resource "aws_dynamodb_table" "enrollments" {
-  name           = "${var.environment}-enrollments"
-  billing_mode   = "PAY_PER_REQUEST"
-  hash_key       = "id"
+  name         = "${var.environment}-enrollments"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "id"
 
   point_in_time_recovery {
     enabled = true
@@ -111,9 +111,9 @@ resource "aws_dynamodb_table" "enrollments" {
 }
 
 resource "aws_dynamodb_table" "lessons" {
-  name           = "${var.environment}-lessons"
-  billing_mode   = "PAY_PER_REQUEST"
-  hash_key       = "id"
+  name         = "${var.environment}-lessons"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "id"
 
   point_in_time_recovery {
     enabled = true
@@ -139,10 +139,10 @@ resource "aws_dynamodb_table" "lessons" {
 }
 
 resource "aws_dynamodb_table" "progress" {
-  name           = "${var.environment}-progress"
-  billing_mode   = "PAY_PER_REQUEST"
-  hash_key       = "user_id"
-  range_key      = "lesson_id"
+  name         = "${var.environment}-progress"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "user_id"
+  range_key    = "lesson_id"
 
   point_in_time_recovery {
     enabled = true
@@ -162,9 +162,9 @@ resource "aws_dynamodb_table" "progress" {
 }
 
 resource "aws_dynamodb_table" "service_leads" {
-  name           = "${var.environment}-service-leads"
-  billing_mode   = "PAY_PER_REQUEST"
-  hash_key       = "id"
+  name         = "${var.environment}-service-leads"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "id"
 
   point_in_time_recovery {
     enabled = true
@@ -190,9 +190,9 @@ resource "aws_dynamodb_table" "service_leads" {
 }
 
 resource "aws_dynamodb_table" "mentorship_sessions" {
-  name           = "${var.environment}-mentorship-sessions"
-  billing_mode   = "PAY_PER_REQUEST"
-  hash_key       = "id"
+  name         = "${var.environment}-mentorship-sessions"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "id"
 
   point_in_time_recovery {
     enabled = true
@@ -229,9 +229,9 @@ resource "aws_dynamodb_table" "mentorship_sessions" {
 }
 
 resource "aws_dynamodb_table" "modules" {
-  name           = "${var.environment}-modules"
-  billing_mode   = "PAY_PER_REQUEST"
-  hash_key       = "id"
+  name         = "${var.environment}-modules"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "id"
 
   point_in_time_recovery {
     enabled = true

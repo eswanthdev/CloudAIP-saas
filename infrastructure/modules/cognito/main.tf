@@ -54,14 +54,14 @@ resource "aws_cognito_user_pool" "main" {
 }
 
 resource "aws_cognito_user_pool_client" "main" {
-  name                         = "${var.environment}-finops-client"
-  user_pool_id                 = aws_cognito_user_pool.main.id
-  explicit_auth_flows          = ["ADMIN_NO_SRP_AUTH", "USER_PASSWORD_AUTH", "ALLOW_REFRESH_TOKEN_AUTH"]
-  allowed_oauth_flows          = ["code", "implicit"]
-  allowed_oauth_scopes         = ["openid", "profile", "email"]
+  name                                 = "${var.environment}-finops-client"
+  user_pool_id                         = aws_cognito_user_pool.main.id
+  explicit_auth_flows                  = ["ADMIN_NO_SRP_AUTH", "USER_PASSWORD_AUTH", "ALLOW_REFRESH_TOKEN_AUTH"]
+  allowed_oauth_flows                  = ["code", "implicit"]
+  allowed_oauth_scopes                 = ["openid", "profile", "email"]
   allowed_oauth_flows_user_pool_client = true
-  callback_urls                = var.callback_urls
-  logout_urls                  = var.logout_urls
+  callback_urls                        = var.callback_urls
+  logout_urls                          = var.logout_urls
 
   read_attributes  = ["email", "custom:role", "custom:tier"]
   write_attributes = ["email", "custom:role", "custom:tier"]
@@ -76,22 +76,22 @@ resource "aws_cognito_user_pool_client" "main" {
   access_token_validity = 1
   id_token_validity     = 1
 
-  enable_token_revocation = true
+  enable_token_revocation       = true
   prevent_user_existence_errors = "ENABLED"
 
   depends_on = [aws_cognito_user_pool.main]
 }
 
 resource "aws_cognito_user_group" "admin" {
-  name        = "admin"
+  name         = "admin"
   user_pool_id = aws_cognito_user_pool.main.id
-  description = "Admin users with full platform access"
+  description  = "Admin users with full platform access"
 }
 
 resource "aws_cognito_user_group" "student" {
-  name        = "student"
+  name         = "student"
   user_pool_id = aws_cognito_user_pool.main.id
-  description = "Student users with course access"
+  description  = "Student users with course access"
 }
 
 resource "aws_cognito_user_pool_domain" "main" {

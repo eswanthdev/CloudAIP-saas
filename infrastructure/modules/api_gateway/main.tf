@@ -3,11 +3,11 @@ resource "aws_apigatewayv2_api" "main" {
   protocol_type = "HTTP"
   cors_configuration {
     allow_credentials = true
-    allow_headers = ["content-type", "x-amz-date", "authorization", "x-api-key", "x-amz-security-token", "x-amz-user-agent"]
-    allow_methods = ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
-    allow_origins = var.cors_origins
-    expose_headers = ["x-amzn-RequestId"]
-    max_age = 300
+    allow_headers     = ["content-type", "x-amz-date", "authorization", "x-api-key", "x-amz-security-token", "x-amz-user-agent"]
+    allow_methods     = ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+    allow_origins     = var.cors_origins
+    expose_headers    = ["x-amzn-RequestId"]
+    max_age           = 300
   }
 
   tags = var.tags
@@ -49,10 +49,10 @@ resource "aws_apigatewayv2_route" "health" {
 }
 
 resource "aws_apigatewayv2_stage" "dev" {
-  count           = var.environment == "dev" ? 1 : 0
-  api_id          = aws_apigatewayv2_api.main.id
-  name            = "dev"
-  auto_deploy     = true
+  count       = var.environment == "dev" ? 1 : 0
+  api_id      = aws_apigatewayv2_api.main.id
+  name        = "dev"
+  auto_deploy = true
   stage_variables = {
     environment = "dev"
   }
@@ -82,10 +82,10 @@ resource "aws_apigatewayv2_stage" "dev" {
 }
 
 resource "aws_apigatewayv2_stage" "prod" {
-  count           = var.environment == "prod" ? 1 : 0
-  api_id          = aws_apigatewayv2_api.main.id
-  name            = "prod"
-  auto_deploy     = true
+  count       = var.environment == "prod" ? 1 : 0
+  api_id      = aws_apigatewayv2_api.main.id
+  name        = "prod"
+  auto_deploy = true
   stage_variables = {
     environment = "prod"
   }
