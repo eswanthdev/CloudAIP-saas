@@ -78,6 +78,15 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-south-1
 
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Build Lambda layer
+        run: |
+          pip install -r ../../../backend/requirements.txt -t ../../../backend/layer --quiet
+
       - name: Terraform Init
         run: terraform init
 
@@ -121,6 +130,15 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-south-1
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Build Lambda layer
+        run: |
+          pip install -r ../../../backend/requirements.txt -t ../../../backend/layer --quiet
 
       - name: Terraform Init
         run: terraform init
